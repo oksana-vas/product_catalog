@@ -1,46 +1,120 @@
-# Getting Started with Create React App
+# React Phone catalog
+- If you work alone follow the [React task guideline](https://github.com/mate-academy/react_task-guideline#react-tasks-guideline)
+- If you work in a team follow the [Work in a team guideline](https://github.com/mate-academy/react_task-guideline/blob/master/team-flow.md#how-to-work-in-a-team)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Description
+Implement Products catalog following [this design](https://www.figma.com/file/uEetgWenSRxk9jgiym6Yzp/Phone-catalog-redesign?node-id=1%3A2).
 
-## Available Scripts
+Use [products](https://mate-academy.github.io/react_phone-catalog/api/products.json)
+and [product details](https://mate-academy.github.io/react_phone-catalog/api/products/dell-streak-7.json)
+tо fetch data (use actual `productId` as a last part of the URL before `.json`).
 
-In the project directory, you can run:
+If you want to change any API data for the phones you can update the files in the `/public/api` folder, and use you project link as a `BASE_API_URL`.
 
-### `npm start`
+Store the Cart in the `localStorage`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Tasks
+- Create `pages`, `components` and `helpers` folders to structure your app
+- Use `scss` files per component
+- Use component names as BEM block names with all the other BEM rules applied
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### App
+1. Add `<header>` with links to all the pages
+    - The `Logo` and the `Nav` are aligned left
+    - The `Favorites` and the `Cart` are aligned right
+1. Use `NavLink` to highlight current page in `Header`
+1. Add `<footer>`
+    - Footer content is limited to the same width as the page content
+    - Add the link to the Github repo
+    - (*) Implement `Back to top` button
 
-### `npm test`
+### Home page
+1. Create `HomePage` available at `/` with just a title `Home page`
+1. Fetch products from API
+    - Each product has a `type`: `phone`, `tablet` or `accessory`
+    - `price` is given before `discount`
+    - `discount` is give in percents `%`
+    - `age` is used to sort by `Newest`
+    - `id` is required to fetch product details
+1. Create `ProductsSlider` component and use it in `Hot prices` block
+    - Create `getHotPriceProducts` method fetching products with discount from API
+      sorted by absolute discount value (not percentage given in API)
+    - For now do all the filtering and sorting on client side
+    - Create `ProductCard` component to use it everywhere and add `data-cy="cardsContainer"` attribute to the container of these elements
+    - Add ability to use `<` and `>` buttons to scroll products.
+1. Add `Brand new` block using `ProductsSlider`
+    - Create `getBrandNewProducts` method fetching products without a discount from the API starting from the most expensive
+1. Add `Shop by category` block with the links to `/phones`, `/tablets` and `/accessories`. Add `data-cy="categoryLinksContainer"`
+to links container.
+1. Replace the `Home page` title with slider and use for picture element of this slider
+    - User can change pictures with buttons infinitely
+    - (*) Swipe pictures every 5 seconds
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Phones page
+1. Create `PhonesPage` available at `/phones` with a `<h1>` title `Mobile phones`
+    - Create `getPhones` API call fetching the products with the `type`: `phone`
+1. Add `ProductsList` with `data-cy="productList"` attribute showing all the `phones`
+1. Implement a `Loader` to show it while waiting for the data from server
+1. Add ability to sort the products by `age` (`Newest`, `value="age"`), `name` (`Alphabetically`, `value="name"`) and `price` (`Cheapest`, `value="price"`) using `<select>` element.
+    - (*) save sort order in the URL `?sort=age` and apply it after the page reload
+1. Add `Pagination` using `data-cy="pagination"` for it's components container and `Items on page` using `<select>` element with `4`, `8`, `16` and `all` options. Add attributes `data-cy="paginationLeft"` and `data-cy="paginationRight"` to pagination buttons
+    - It should limit the products you show to the user
+    - Read [the description](https://github.com/mate-academy/react_pagination#react-pagination) for more detailed explanation
+    - Hide all the pagination elements if there are a few items (less than 1 smallest page size)
+    - (*) Save `?page=2&perPage=8` in the URL and apply them after the page reload
 
-### `npm run build`
+## Tablets and accessories
+1. Create `TabletsPage` page with `<h1>` title `Tablets` available at `/tablets` working the same way as `PhonesPage`
+    - Create `getTablets` method fetching the products with `type`: `tablet`
+1. Create `AccessoriesPage` with `<h1>` title `Accessories` page available at `/accessories` working the same way as `PhonesPage`
+    - Create `getAccessories` method fetching the products with `type`: `accessory`
+    - Implement `NoResults` component displayed if there are no products available containing text `<Category name> not found`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Product details page
+1. Create `ProductDetailsPage` available at `/product/:productId`
+    - `ProductCard` should be a link to the details page
+1. Fetch phone details from API taking the `phoneId` from the URL
+    - Use `Loader` when fetching the details
+1. Show the details on the page
+    - Hide `Available colors` and `Select capacity` for now
+    - `About` section with `data-cy="productDescription"` should contain just a description (without any subheaders)
+    - Choose `Tech specs` you want to show
+1. Add ability to choose a picture
+1. Implement `You may also like` block with products chosen randomly
+    - create `getSuggestedProducts` method fetching the suggested products
+1. Add `Back` button with `data-cy="backButton"` attribute working the same way as a Browser `Back` button
+1. Add `Breadcrumbs` at the top with `data-cy="breadCrumbs"` attribute in elements container
+    - The last part is a plain text all the other ones are links
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Cart
+1. Implement `CartPage` storing an array of `CartItems`
+    - Each item should have `id`, `quantity` and a `product`
+1. `Add to cart` button in `ProductCart` should add a product to the `Cart`
+1. If the product is already in the `Cart` the button should say `Added to cart`
+1. Implement `Cart` helper storing the items in memory and having all the required methods.
+  Later on it will interact with the API
+1. Add ability to remove items from the `Cart` with a `x` button. Add `data-cy="cartDeleteButton"` attribute to the `<button>` element.
+1. Add message `Your cart is empty` when there are no products in the `Cart`
+1. Add ability to change the quantity in the `Cart` with buttons containing symbols `-` and `+` around the quantity.
+1. Total amount and quantity should be calculated automatically. The element showing the quantity should have `data-cy="productQauntity"` attribute.
+1. `Checkout` button should show the message `We are sorry, but this feature is not implemented yet` after clicking.
+1. (*) Show the total quantity near the `Cart` icon in the header.
+1. (*) Save the `Cart` to the `localSotrage` on each change and read it on page load.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Favorites
+1. Create `FavoritesPage` it should show the `ProductsList` with all the favorite products
+1. Add ability to add/remove favorite products by pressing a hart and add `data-cy="addToFavorite"` attribute to this `<button>` element.
+1. (*) Show the favorites count near the `Favorites` icon in the header
 
-### `npm run eject`
+### Search
+1. Add a `Search` component with an input into the `<header>` to filter products
+1. It should be shown only at `/phones`, `/tablets`, `/accessories` and `/favorites` with an appropriate text
+1. The `x` sign with `data-cy="searchDelete"` attribute appears when the query is not empty and clears the search
+1. It should work with pagination and sorting
+1. (*) Add `debounce` to the search field
+1. (*) Save `Search` params in the URL using `queryParams` (`?query=moto`) and apply them on page load
+1. (*) Implement `NoSearchResults` component and show it when there are no products matching the query
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Other tasks
+1. Add `NotFoundPage` containing text `Page not found` for all the other URLs with the link to `HomePage`
+1. Implement `Phone was not found` state for the `PhoneDetailsPage` if there is no phone with a given `phoneId` on the server
