@@ -19,7 +19,7 @@ export const Footer: React.FC = () => (
           <ul className="Footer__nav-list">
             <li className="Footer__nav-item">
               <a
-                href="https://github.com"
+                href="https://github.com/oksana-vas"
                 target="_blank"
                 rel="noreferrer noopener"
                 className="Footer__nav-link"
@@ -27,11 +27,18 @@ export const Footer: React.FC = () => (
                 Github
               </a>
             </li>
+
             <li className="Footer__nav-item">
-              <Link to="/contacts" className="Footer__nav-link">
+              <a
+                href="https://www.linkedin.com/in/oksana-vasyliuk-dev/"
+                target="_blank"
+                rel="noreferrer noopener"
+                className="Footer__nav-link"
+              >
                 Contacts
-              </Link>
+              </a>
             </li>
+
             <li className="Footer__nav-item">
               <Link to="/rigths" className="Footer__nav-link">
                 Rights
