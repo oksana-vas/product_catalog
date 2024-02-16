@@ -9,6 +9,11 @@ export const Search: React.FC = () => {
   const [query, setQuery] = useState(searchParams.get('query') || '');
   const { pathname } = useLocation();
 
+  const applyQuery = useMemo(
+    () => debounce(setSearchParams, 1000),
+    [setSearchParams],
+  );
+
   useEffect(() => {
     const currentQuery = searchParams.get('query') || '';
 
@@ -18,32 +23,25 @@ export const Search: React.FC = () => {
     ));
   }, [searchParams, setSearchParams]);
 
-  const applyQuery = useMemo(
-    () => debounce(setSearchParams, 1000),
-    [setSearchParams],
-  );
-
   const deleteQuery = () => {
     setQuery('');
     setSearchParams(getSearchWith(
-      searchParams, {
-        query: null,
-      },
+      searchParams, { query: null },
     ));
   };
 
   const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!event.target.value) {
+    if (!event.target.value.trim()) {
       deleteQuery();
-    } else {
-      setQuery(event.target.value);
-      applyQuery(getSearchWith(
-        searchParams, {
-          query: event.target.value,
-          page: '1',
-        },
-      ));
     }
+
+    setQuery(event.target.value);
+    applyQuery(getSearchWith(
+      searchParams, {
+        query: event.target.value.trim(),
+        page: '1',
+      },
+    ));
   };
 
   return (
@@ -52,7 +50,6 @@ export const Search: React.FC = () => {
         type="text"
         className="Search__input"
         placeholder={`Search in ${pathname.slice(1)}...`}
-        value={query}
         onChange={handleQueryChange}
       />
 
